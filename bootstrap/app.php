@@ -11,6 +11,8 @@
 |
 */
 
+//创建application容器的实例，不管怎么样，php的类还是要new出来的
+//路径是app的上一层
 $app = new Illuminate\Foundation\Application(
     realpath(__DIR__.'/../')
 );
@@ -26,16 +28,20 @@ $app = new Illuminate\Foundation\Application(
 |
 */
 
+//这里在app容器里绑定比较重要的类
+//http内核
 $app->singleton(
     Illuminate\Contracts\Http\Kernel::class,
     App\Http\Kernel::class
 );
 
+//cli 运行的内核
 $app->singleton(
     Illuminate\Contracts\Console\Kernel::class,
     App\Console\Kernel::class
 );
 
+//最后的异常处理类
 $app->singleton(
     Illuminate\Contracts\Debug\ExceptionHandler::class,
     App\Exceptions\Handler::class

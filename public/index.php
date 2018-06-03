@@ -7,6 +7,7 @@
  * @author   Taylor Otwell <taylor@laravel.com>
  */
 
+//laravel 开始时间
 define('LARAVEL_START', microtime(true));
 
 /*
@@ -21,6 +22,7 @@ define('LARAVEL_START', microtime(true));
 |
 */
 
+//加载composer自动加载
 require __DIR__.'/../vendor/autoload.php';
 
 /*
@@ -35,6 +37,7 @@ require __DIR__.'/../vendor/autoload.php';
 |
 */
 
+//创建application，并注册内核
 $app = require_once __DIR__.'/../bootstrap/app.php';
 
 /*
@@ -49,12 +52,16 @@ $app = require_once __DIR__.'/../bootstrap/app.php';
 |
 */
 
+//因为public/index.php是cgi形式运行的php，所以创建Http内核的实体
 $kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
 
+//处理请求
 $response = $kernel->handle(
     $request = Illuminate\Http\Request::capture()
 );
 
+//返回响应
 $response->send();
 
+//http内核结束处理
 $kernel->terminate($request, $response);
