@@ -7,7 +7,7 @@
  * @author   Taylor Otwell <taylor@laravel.com>
  */
 
-//laravel 开始时间
+//开始时间
 define('LARAVEL_START', microtime(true));
 
 /*
