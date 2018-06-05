@@ -329,6 +329,7 @@ class Container implements ArrayAccess, ContainerContract
      */
     public function singleton($abstract, $concrete = null)
     {
+    	//singleton和普通bind就区别在于 shared=true，这样被创造出来的实例就会被共享，相当于单例模式
         $this->bind($abstract, $concrete, true);
     }
 

@@ -186,7 +186,7 @@ class Application extends Container implements ApplicationContract, HttpKernelIn
         $this->instance(Container::class, $this);
 
         //绑定PackageManifest为本身的一个实例
-        //PackageManifest 是实现包自动发现的类
+        //PackageManifest 是实现包自动发现的类,构造函数中只是设置基本属性
         $this->instance(PackageManifest::class, new PackageManifest(
             new Filesystem, $this->basePath(), $this->getCachedPackagesPath()
         ));
@@ -200,6 +200,8 @@ class Application extends Container implements ApplicationContract, HttpKernelIn
     protected function registerBaseServiceProviders()
     {
         //事件服务提供者
+		//这里要区分开，这是Illuminate\Events\EventServiceProvider;
+		//config->app.providers里是App\Providers\EventServiceProvider
         $this->register(new EventServiceProvider($this));
 
         //日志服务提供者

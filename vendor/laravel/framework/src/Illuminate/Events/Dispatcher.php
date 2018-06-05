@@ -551,6 +551,8 @@ class Dispatcher implements DispatcherContract
     /**
      * Set the queue resolver implementation.
      *
+	 * todo queueResolver为什么要设计成匿名函数的形式呢
+	 * 思考：匿名函数可以不先创建实例，如果使用了再生成实例，这样节省内存提高效率
      * @param  callable  $resolver
      * @return $this
      */
