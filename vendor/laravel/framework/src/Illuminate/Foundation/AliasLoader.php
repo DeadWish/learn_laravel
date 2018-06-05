@@ -150,6 +150,7 @@ class AliasLoader
      */
     public function register()
     {
+    	//防止多次加入自动加载Facades
         if (! $this->registered) {
             $this->prependToLoaderStack();
 
@@ -164,6 +165,7 @@ class AliasLoader
      */
     protected function prependToLoaderStack()
     {
+    	//把$this->>load()方法加入到自动加载函数队列最前（自动加载会优先使用这个函数）
         spl_autoload_register([$this, 'load'], true, true);
     }
 

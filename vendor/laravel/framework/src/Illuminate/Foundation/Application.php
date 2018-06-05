@@ -564,13 +564,16 @@ class Application extends Container implements ApplicationContract, HttpKernelIn
      */
     public function registerConfiguredProviders()
     {
+    	//把app.providers里的providers分成两组，一组是Illuminate开头的（laravel-framework的providers）
+		//一组是laravel应用使用的
         $providers = Collection::make($this->config['app.providers'])
                         ->partition(function ($provider) {
                             return Str::startsWith($provider, 'Illuminate\\');
                         });
-
+		//这里很巧妙，在Illuminate开头的后面加入composer加载的laravel包的providers
         $providers->splice(1, 0, [$this->make(PackageManifest::class)->providers()]);
 
+        //最后按照 laravel-framework  => composer-laravel组件 => laravel应用组件（包括自定义）的顺序，加载providers
         (new ProviderRepository($this, new Filesystem, $this->getCachedServicesPath()))
                     ->load($providers->collapse()->toArray());
     }
@@ -596,15 +599,18 @@ class Application extends Container implements ApplicationContract, HttpKernelIn
             $provider = $this->resolveProvider($provider);
         }
 
+        //调用provider的register方法
         if (method_exists($provider, 'register')) {
             $provider->register();
         }
 
+        //标记被注册，就是在serviceProviders和loadedProviders中记录一下
         $this->markAsRegistered($provider);
 
         // If the application has already booted, we will call this boot method on
         // the provider class so it has an opportunity to do its boot logic and
         // will be ready for any usage by this developer's application logic.
+		// 如果已经启动过provider，这里要专门启动一次，因为在程序中动态注册的provider或者延迟加载的provider没办法提前启动（调用boot()）
         if ($this->booted) {
             $this->bootProvider($provider);
         }
@@ -719,6 +725,8 @@ class Application extends Container implements ApplicationContract, HttpKernelIn
 
         $this->register($instance = new $provider($this));
 
+        //如果没有启动过，则注册上provider booting回调(booting事件的listener)
+		//在启动之前就是用了延迟加载的provider
         if (! $this->booted) {
             $this->booting(function () use ($instance) {
                 $this->bootProvider($instance);
@@ -783,14 +791,18 @@ class Application extends Container implements ApplicationContract, HttpKernelIn
         // Once the application has booted we will also fire some "booted" callbacks
         // for any listeners that need to do work after this initial booting gets
         // finished. This is useful when ordering the boot-up processes we run.
+		//booting事件
         $this->fireAppCallbacks($this->bootingCallbacks);
 
+        //分别调用provider的boot()方法
         array_walk($this->serviceProviders, function ($p) {
             $this->bootProvider($p);
         });
 
+        //标记provider已经启动
         $this->booted = true;
 
+        //booted事件
         $this->fireAppCallbacks($this->bootedCallbacks);
     }
 

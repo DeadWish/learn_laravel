@@ -34,11 +34,17 @@ class Kernel implements KernelContract
      * @var array
      */
     protected $bootstrappers = [
+    	//环境
         \Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables::class,
+		//config
         \Illuminate\Foundation\Bootstrap\LoadConfiguration::class,
+		//注册异常、错误、崩溃的处理函数
         \Illuminate\Foundation\Bootstrap\HandleExceptions::class,
+		//加载facades的alias，并加入facades自动加载逻辑
         \Illuminate\Foundation\Bootstrap\RegisterFacades::class,
+		//注册该注册的的providers，会调用provider->register
         \Illuminate\Foundation\Bootstrap\RegisterProviders::class,
+		//启动provider，会调用provider->boot
         \Illuminate\Foundation\Bootstrap\BootProviders::class,
     ];
 
