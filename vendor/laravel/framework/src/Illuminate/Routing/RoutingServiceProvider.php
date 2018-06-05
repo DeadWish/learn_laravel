@@ -20,10 +20,13 @@ class RoutingServiceProvider extends ServiceProvider
      */
     public function register()
     {
+    	//router，路由器
         $this->registerRouter();
 
+        //todo url 生成器好复杂
         $this->registerUrlGenerator();
 
+        //重定向服务
         $this->registerRedirector();
 
         $this->registerPsrRequest();

@@ -457,8 +457,10 @@ class Container implements ArrayAccess, ContainerContract
      */
     public function alias($abstract, $alias)
     {
+    	//多个类名(别名)会指向同一个名字，例如app, db等
         $this->aliases[$alias] = $abstract;
 
+        //一个名字里例如app，会记录三个别名，数组
         $this->abstractAliases[$abstract][] = $alias;
     }
 

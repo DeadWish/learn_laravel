@@ -207,7 +207,7 @@ class Application extends Container implements ApplicationContract, HttpKernelIn
         //日志服务提供者
         $this->register(new LogServiceProvider($this));
 
-        //路由服务提供者
+        //路由服务提供者，todo 路由器实现的好复杂，需要好好研究
         $this->register(new RoutingServiceProvider($this));
     }
 
@@ -1134,6 +1134,7 @@ class Application extends Container implements ApplicationContract, HttpKernelIn
     public function registerCoreContainerAliases()
     {
         //注意这里的foreach是两层循环，每个别名后的数组里的类名都会被分别绑定到别名上
+		//这里要弄清，app不是别名，后面的三个数组才是别名
         foreach ([
             'app'                  => [\Illuminate\Foundation\Application::class, \Illuminate\Contracts\Container\Container::class, \Illuminate\Contracts\Foundation\Application::class,  \Psr\Container\ContainerInterface::class],
             'auth'                 => [\Illuminate\Auth\AuthManager::class, \Illuminate\Contracts\Auth\Factory::class],

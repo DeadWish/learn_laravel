@@ -8,6 +8,7 @@ class Test extends Controller
 {
     public function test(Request $request)
     {
+    	dd(app('url'));
         return 'test';
     }
 }

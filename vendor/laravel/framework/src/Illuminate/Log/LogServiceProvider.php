@@ -14,7 +14,7 @@ class LogServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //单例绑定'log'为匿名函数
+        //单例绑定'log'为匿名函数，好处就是，使用的时候才
         $this->app->singleton('log', function () {
             return $this->createLogger();
         });
@@ -27,16 +27,20 @@ class LogServiceProvider extends ServiceProvider
      */
     public function createLogger()
     {
+    	//创建一个log writer的实例 channel就是日志的名字，后面的app['events']，是事件分发器，用来处理日志记录事件
         $log = new Writer(
             new Monolog($this->channel()), $this->app['events']
         );
 
+        //这里的代码是设置 monolog的handler，hasMonologConfigurator设置的话可以自定义monolog handler
         if ($this->app->hasMonologConfigurator()) {
             call_user_func($this->app->getMonologConfigurator(), $log->getMonolog());
         } else {
+        	//看名字就知道，这个是读取config配置的log handler
             $this->configureHandler($log);
         }
 
+        //这里返回的是Illuminate\Log\Writer 的实例，所以Log::xxx(),调用的都是Writer的方法
         return $log;
     }
 
@@ -63,6 +67,16 @@ class LogServiceProvider extends ServiceProvider
      */
     protected function configureHandler(Writer $log)
     {
+    	//拼写出handler的名字
+		//查找这样命名的函数，知道有四种处理函数
+		/*
+		 * single —— 将日志记录到单个文件中。该日志处理器对应Monolog的StreamHandler。
+		 * daily —— 以日期为单位将日志进行归档，每天创建一个新的日志文件记录日志。该日志处理器 对应Monolog的RotatingFileHandler。
+		 * syslog —— 将日志记录到syslog中。该日志处理器 对应Monolog的SyslogHandler。
+		 * errorlog —— 将日志记录到PHP的error_log中。该日志处理器 对应Monolog的ErrorLogHandler。
+		 *
+		 * 项目实际日志处理器通过config/app.php中的log配置项决定，默认配置值为single。
+		 */
         $this->{'configure'.ucfirst($this->handler()).'Handler'}($log);
     }
 
