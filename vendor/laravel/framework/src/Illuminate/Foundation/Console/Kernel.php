@@ -64,7 +64,7 @@ class Kernel implements KernelContract
         \Illuminate\Foundation\Bootstrap\LoadConfiguration::class,
         \Illuminate\Foundation\Bootstrap\HandleExceptions::class,
         \Illuminate\Foundation\Bootstrap\RegisterFacades::class,
-        \Illuminate\Foundation\Bootstrap\SetRequestForConsole::class,
+        \Illuminate\Foundation\Bootstrap\SetRequestForConsole::class,//没搞懂这个是干嘛用的
         \Illuminate\Foundation\Bootstrap\RegisterProviders::class,
         \Illuminate\Foundation\Bootstrap\BootProviders::class,
     ];
@@ -103,12 +103,13 @@ class Kernel implements KernelContract
 
         $schedule = $this->app->make(Schedule::class);
 
+        //运行 schedule ，实际代码是在 app/Console/Kernel.php
         $this->schedule($schedule);
     }
 
     /**
      * Run the console application.
-     *
+     * 这个方法是在 artisan 里调用的，是在cli application 开启的时候运行
      * @param  \Symfony\Component\Console\Input\InputInterface  $input
      * @param  \Symfony\Component\Console\Output\OutputInterface  $output
      * @return int
@@ -116,6 +117,7 @@ class Kernel implements KernelContract
     public function handle($input, $output = null)
     {
         try {
+        	//先运行kernel的引导部分
             $this->bootstrap();
 
             return $this->getArtisan()->run($input, $output);

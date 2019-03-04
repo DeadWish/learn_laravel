@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        //在Console里实现的方法一定要在这里写上
     ];
 
     /**
@@ -24,8 +24,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+    	// php artisan schedule:run 就会运行这个
+
+         $schedule->command('inspire')
+                  ->hourly();
     }
 
     /**

@@ -30,6 +30,7 @@ $app = require_once __DIR__.'/bootstrap/app.php';
 |
 */
 
+//这个实例是 @\Illuminate\Foundation\Console\Kernel
 $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
 
 $status = $kernel->handle(

@@ -66,6 +66,8 @@ class Schedule
             $command = Container::getInstance()->make($command)->getName();
         }
 
+        // formatCommandString 会返回类似  php artisan command 这种形式
+		// 这里的 exec 只是拼接成命令后，加入了 $this->events
         return $this->exec(
             Application::formatCommandString($command), $parameters
         );
