@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection as BaseCollection;
 use Illuminate\Database\Eloquent\JsonEncodingException;
 
+//有属性
 trait HasAttributes
 {
     /**
@@ -36,6 +37,7 @@ trait HasAttributes
     protected $changes = [];
 
     /**
+     * 转换类型
      * The attributes that should be cast to native types.
      *
      * @var array
@@ -43,6 +45,7 @@ trait HasAttributes
     protected $casts = [];
 
     /**
+     * 应该被转换为date类型的
      * The attributes that should be mutated to dates.
      *
      * @var array
@@ -57,6 +60,7 @@ trait HasAttributes
     protected $dateFormat;
 
     /**
+     * 可以附加数据库里没有的字段
      * The accessors to append to the model's array form.
      *
      * @var array
@@ -71,6 +75,7 @@ trait HasAttributes
     public static $snakeAttributes = true;
 
     /**
+     * 会缓存例如 get****Attribute 的属性，
      * The cache of the mutated attributes for each class.
      *
      * @var array
@@ -78,6 +83,7 @@ trait HasAttributes
     protected static $mutatorCache = [];
 
     /**
+     * 光把属性转换成 array
      * Convert the model's attributes to an array.
      *
      * @return array
@@ -90,11 +96,11 @@ trait HasAttributes
         $attributes = $this->addDateAttributesToArray(
             $attributes = $this->getArrayableAttributes()
         );
-
+        // 获取已经转换过的属性
         $attributes = $this->addMutatedAttributesToArray(
             $attributes, $mutatedAttributes = $this->getMutatedAttributes()
         );
-
+        // 处理 $cast的地方
         // Next we will handle any casts that have been setup for this model and cast
         // the values to their appropriate type. If the attribute has a mutator we
         // will not perform the cast on those attributes to avoid any confusion.
@@ -124,7 +130,7 @@ trait HasAttributes
             if (! isset($attributes[$key])) {
                 continue;
             }
-
+            //把日期转换成数据库使用的格式
             $attributes[$key] = $this->serializeDate(
                 $this->asDateTime($attributes[$key])
             );
@@ -275,6 +281,7 @@ trait HasAttributes
     }
 
     /**
+     * 这里过滤了 $visible 和 $hidden 设定的属性
      * Get an attribute array of all arrayable values.
      *
      * @param  array  $values
@@ -763,6 +770,7 @@ trait HasAttributes
     }
 
     /**
+     * 如果使用了 默认的timestamps 就和dates 属性合并一下
      * Get the attributes that should be converted to dates.
      *
      * @return array
