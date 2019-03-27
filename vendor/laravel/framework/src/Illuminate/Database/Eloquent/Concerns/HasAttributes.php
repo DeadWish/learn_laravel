@@ -227,6 +227,7 @@ trait HasAttributes
     }
 
     /**
+     * 关系转为array
      * Get the model's relationships in array form.
      *
      * @return array
@@ -331,6 +332,7 @@ trait HasAttributes
     }
 
     /**
+     * 获取属性具体的值，关系类型的不行
      * Get a plain attribute (not a relationship).
      *
      * @param  string  $key
@@ -343,6 +345,7 @@ trait HasAttributes
         // If the attribute has a get mutator, we will call that then return what
         // it returns as the value, which is useful for transforming values on
         // retrieval from the model to a form that is more useful for usage.
+        //如果有突变方法，则过滤一次突变方法，即使这里的$value没有，也可以，就当作没有传参数一样
         if ($this->hasGetMutator($key)) {
             return $this->mutateAttribute($key, $value);
         }
@@ -350,6 +353,7 @@ trait HasAttributes
         // If the attribute exists within the cast array, we will convert it to
         // an appropriate native PHP type dependant upon the associated value
         // given with the key in the pair. Dayle made this comment line up.
+        // 转换类型
         if ($this->hasCast($key)) {
             return $this->castAttribute($key, $value);
         }
@@ -357,6 +361,7 @@ trait HasAttributes
         // If the attribute is listed as a date, we will convert it to a DateTime
         // instance on retrieval, which makes it quite convenient to work with
         // date fields without having to create a mutator for each property.
+        // 转换为日期的属性，自定义的时间属性如果登记在$dates 就可以返回Carbon对象
         if (in_array($key, $this->getDates()) &&
             ! is_null($value)) {
             return $this->asDateTime($value);
@@ -396,6 +401,7 @@ trait HasAttributes
         // If the "attribute" exists as a method on the model, we will just assume
         // it is a relationship and will load and return results from the query
         // and hydrate the relationship's value on the "relationships" array.
+        // 加载关系类型
         if (method_exists($this, $key)) {
             return $this->getRelationshipFromMethod($key);
         }
@@ -423,6 +429,7 @@ trait HasAttributes
     }
 
     /**
+     * 任何属性都可以有，是数据库字段，不是数据库字段都行
      * Determine if a get mutator exists for an attribute.
      *
      * @param  string  $key
@@ -434,6 +441,7 @@ trait HasAttributes
     }
 
     /**
+     * 调用突变方法
      * Get the value of an attribute using its mutator.
      *
      * @param  string  $key
@@ -526,6 +534,7 @@ trait HasAttributes
         // First we will check for the presence of a mutator for the set operation
         // which simply lets the developers tweak the attribute as it is set on
         // the model, such as "json_encoding" an listing of data for storage.
+        // set 的 突变函数，有get 也有对应的set
         if ($this->hasSetMutator($key)) {
             $method = 'set'.Str::studly($key).'Attribute';
 
@@ -546,6 +555,14 @@ trait HasAttributes
         // If this attribute contains a JSON ->, we'll set the proper value in the
         // attribute's underlying array. This takes care of properly nesting an
         // attribute in the array's value in the case of deeply nested items.
+        // 这个是支持 json 字段的，设置json属性时候， $key->path1->path2, $value
+        // <pre>
+        // "key" : {
+         //      "path1" => {
+        //            'path2': value
+        //        }
+        //  }
+        // </pre>
         if (Str::contains($key, '->')) {
             return $this->fillJsonAttribute($key, $value);
         }
