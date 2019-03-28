@@ -887,6 +887,7 @@ trait HasAttributes
     }
 
     /**
+     * 设置属性值，第二个参数可以同步 original值
      * Set the array of model attributes. No checking is done.
      *
      * @param  array  $attributes
@@ -934,6 +935,7 @@ trait HasAttributes
     }
 
     /**
+     * 同步值
      * Sync the original attributes with the current.
      *
      * @return $this
@@ -946,6 +948,7 @@ trait HasAttributes
     }
 
     /**
+     * 同步一个
      * Sync a single original attribute with its current value.
      *
      * @param  string  $attribute
@@ -971,6 +974,7 @@ trait HasAttributes
     }
 
     /**
+     * 判断某个值是否发生了变化
      * Determine if the model or given attribute(s) have been modified.
      *
      * @param  array|string|null  $attributes
@@ -1036,6 +1040,7 @@ trait HasAttributes
     }
 
     /**
+     * 获取到发生变化的值
      * Get the attributes that have been changed since last sync.
      *
      * @return array
@@ -1123,6 +1128,7 @@ trait HasAttributes
     }
 
     /**
+     * 获取发生突变以后的属性
      * Get the mutated attributes for a given instance.
      *
      * @return array
@@ -1139,6 +1145,7 @@ trait HasAttributes
     }
 
     /**
+     * 缓存突变以后的属性
      * Extract and cache all the mutated attributes of a class.
      *
      * @param  string  $class
@@ -1152,6 +1159,7 @@ trait HasAttributes
     }
 
     /**
+     * 获取到所有突变的方法
      * Get all of the attribute mutator methods.
      *
      * @param  mixed  $class
