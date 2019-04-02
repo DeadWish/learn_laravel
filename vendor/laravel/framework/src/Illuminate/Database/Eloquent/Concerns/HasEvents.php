@@ -11,6 +11,7 @@ trait HasEvents
      *
      * Allows for object-based events for native Eloquent events.
      *
+     * 这里可以在model中登记想要触发的事件，可以通过 fireModelEvent 来触发
      * @var array
      */
     protected $dispatchesEvents = [];
@@ -19,12 +20,14 @@ trait HasEvents
      * User exposed observable events.
      *
      * These are extra user-defined events observers may subscribe to.
+     * 这里是用户自定义的观察者方法，会和默认的方法合并
      *
      * @var array
      */
     protected $observables = [];
 
     /**
+     * 给模型加观察者
      * Register an observer with the Model.
      *
      * @param  object|string  $class
@@ -39,6 +42,7 @@ trait HasEvents
         // When registering a model observer, we will spin through the possible events
         // and determine if this observer has that method. If it does, we will hook
         // it into the model's event system, making it convenient to watch these.
+        // 这里会检查观察者有没有那些方法，有的话就给他注册到模型的事件系统里
         foreach ($instance->getObservableEvents() as $event) {
             if (method_exists($class, $event)) {
                 static::registerModelEvent($event, $className.'@'.$event);
@@ -49,6 +53,17 @@ trait HasEvents
     /**
      * Get the observable event names.
      *
+     * 'retrieved', 取出后
+     * 'creating',
+     * 'created',
+     * 'updating',
+     * 'updated',
+     * 'deleting',
+     * 'deleted',
+     * 'saving',
+     * 'saved',
+     * 'restoring', 软删除的，重新存储
+     * 'restored',
      * @return array
      */
     public function getObservableEvents()
@@ -65,7 +80,7 @@ trait HasEvents
 
     /**
      * Set the observable event names.
-     *
+     * 设置用户自定义观察者的事件名
      * @param  array  $observables
      * @return $this
      */
@@ -120,7 +135,7 @@ trait HasEvents
 
     /**
      * Fire the given event for the model.
-     *
+     * 触发模型的事件
      * @param  string  $event
      * @param  bool  $halt
      * @return mixed
@@ -134,8 +149,10 @@ trait HasEvents
         // First, we will get the proper method to call on the event dispatcher, and then we
         // will attempt to fire a custom, object based event for the given event. If that
         // returns a result we can return that result, or we'll call the string events.
+        // until 碰到一个结果就返回，fire是把结果放在一起返回
         $method = $halt ? 'until' : 'fire';
 
+        // 因为有 fire的原因，所以要过滤一下结果
         $result = $this->filterModelEventResults(
             $this->fireCustomModelEvent($event, $method)
         );
@@ -171,6 +188,7 @@ trait HasEvents
 
     /**
      * Filter the model event results.
+     * 把array中的null也都过滤掉
      *
      * @param  mixed  $result
      * @return mixed
@@ -186,6 +204,7 @@ trait HasEvents
         return $result;
     }
 
+    // 以下这些方法，都是事件的回调，其实就是处理事件，都会被注册到模型的事件系统里去
     /**
      * Register a retrieved model event with the dispatcher.
      *
@@ -320,6 +339,7 @@ trait HasEvents
     /**
      * Set the event dispatcher instance.
      *
+     * 设置时间分发器实例，在DatabaseServiceProvider里会设置，所以app启动就会被设置
      * @param  \Illuminate\Contracts\Events\Dispatcher  $dispatcher
      * @return void
      */

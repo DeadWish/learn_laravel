@@ -17,9 +17,9 @@ use Illuminate\Database\ConnectionResolverInterface as Resolver;
 
 abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializable, QueueableEntity, UrlRoutable
 {
-    use Concerns\HasAttributes,
-        Concerns\HasEvents,
-        Concerns\HasGlobalScopes,
+    use Concerns\HasAttributes, // 属性相关
+        Concerns\HasEvents,     // 事件相关
+        Concerns\HasGlobalScopes,  //拥有全局查询作用域，全局的是自动调用的，例如 SoftDeletingScope
         Concerns\HasRelationships,
         Concerns\HasTimestamps,
         Concerns\HidesAttributes,
@@ -121,7 +121,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
      *
      * @var array
      */
-    protected static $globalScopes = [];
+    protected static $globalScopes = [];  //todo 这里为什么要 static呢
 
     /**
      * The name of the "created at" column.
@@ -835,6 +835,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 
     /**
      * Register the global scopes for this builder instance.
+     * 每次获取新的query
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $builder
      * @return \Illuminate\Database\Eloquent\Builder
