@@ -20,10 +20,10 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     use Concerns\HasAttributes, // 属性相关
         Concerns\HasEvents,     // 事件相关
         Concerns\HasGlobalScopes,  //拥有全局查询作用域，全局的是自动调用的，例如 SoftDeletingScope
-        Concerns\HasRelationships,
-        Concerns\HasTimestamps,
-        Concerns\HidesAttributes,
-        Concerns\GuardsAttributes;
+        Concerns\HasRelationships, //设置关系的方法
+        Concerns\HasTimestamps,  //时间戳update,create
+        Concerns\HidesAttributes, //hidden 和visible 的处理
+        Concerns\GuardsAttributes; // fillable/$guarded 的处理
 
     /**
      * The connection name for the model.

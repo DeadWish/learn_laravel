@@ -21,14 +21,14 @@ trait HasRelationships
 {
     /**
      * The loaded relationships for the model.
-     *
+     * 已被加载的关系
      * @var array
      */
     protected $relations = [];
 
     /**
      * The relationships that should be touched on save.
-     *
+     * 是否更新关系的时间戳，例如：子更新了，父的时间戳一起更新
      * @var array
      */
     protected $touches = [];
@@ -53,6 +53,7 @@ trait HasRelationships
      */
     public function hasOne($related, $foreignKey = null, $localKey = null)
     {
+        //获取到实例
         $instance = $this->newRelatedInstance($related);
 
         $foreignKey = $foreignKey ?: $this->getForeignKey();
@@ -64,7 +65,7 @@ trait HasRelationships
 
     /**
      * Define a polymorphic one-to-one relationship.
-     *
+     * 定义一个多肽的一对一，其实就是关联中有个type字段
      * @param  string  $related
      * @param  string  $name
      * @param  string  $type
@@ -74,6 +75,7 @@ trait HasRelationships
      */
     public function morphOne($related, $name, $type = null, $id = null, $localKey = null)
     {
+        //  如果有了 $name，则不用传$type 和$id 这两个是type字段名和id字段名
         $instance = $this->newRelatedInstance($related);
 
         list($type, $id) = $this->getMorphs($name, $type, $id);
@@ -87,11 +89,12 @@ trait HasRelationships
 
     /**
      * Define an inverse one-to-one or many relationship.
+     * 一对一属于
      *
      * @param  string  $related
      * @param  string  $foreignKey
      * @param  string  $ownerKey
-     * @param  string  $relation
+     * @param  string  $relation 这个其实是个名字，类型名，可自定义
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function belongsTo($related, $foreignKey = null, $ownerKey = null, $relation = null)
@@ -100,7 +103,7 @@ trait HasRelationships
         // the calling method's name and use that as the relationship name as most
         // of the time this will be what we desire to use for the relationships.
         if (is_null($relation)) {
-            $relation = $this->guessBelongsToRelation();
+            $relation = $this->guessBelongsToRelation(); //这里如果没有给 relation name，则就获取调用belongsto方法的那个名字
         }
 
         $instance = $this->newRelatedInstance($related);
@@ -124,7 +127,7 @@ trait HasRelationships
 
     /**
      * Define a polymorphic, inverse one-to-one or many relationship.
-     *
+     * 和morphOne反过来 这个是属于
      * @param  string  $name
      * @param  string  $type
      * @param  string  $id
@@ -144,8 +147,9 @@ trait HasRelationships
         // If the type value is null it is probably safe to assume we're eager loading
         // the relationship. In this case we'll just pass in a dummy query where we
         // need to remove any eager loads that may already be defined on a model.
+        // 如果这个类里以$type 为名的变量是空，则是急切加载
         return empty($class = $this->{$type})
-                    ? $this->morphEagerTo($name, $type, $id)
+                    ? $this->morphEagerTo($name, $type, $id) //todo 这里是要做什么
                     : $this->morphInstanceTo($class, $name, $type, $id);
     }
 
@@ -203,7 +207,7 @@ trait HasRelationships
     protected function guessBelongsToRelation()
     {
         list($one, $two, $caller) = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);
-
+        //$one 是guessBelongsToRelation ,$two 是belongsto/morphTo $caller 则是Model里定义的方法名了
         return $caller['function'];
     }
 
@@ -230,7 +234,7 @@ trait HasRelationships
 
     /**
      * Define a has-many-through relationship.
-     *
+     * 这个是通过中间表来关联一对多
      * @param  string  $related
      * @param  string  $through
      * @param  string|null  $firstKey
@@ -238,6 +242,14 @@ trait HasRelationships
      * @param  string|null  $localKey
      * @param  string|null  $secondLocalKey
      * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    /*
+     * A has B , B has C
+     * A id(getKeyName)
+     * B id($secondLocalKey), A_id($firstKey)
+     * C id, B_id($secondKey)
+     *
+     *
      */
     public function hasManyThrough($related, $through, $firstKey = null, $secondKey = null, $localKey = null, $secondLocalKey = null)
     {
@@ -284,14 +296,14 @@ trait HasRelationships
 
     /**
      * Define a many-to-many relationship.
-     *
+     * 多对多
      * @param  string  $related
      * @param  string  $table
      * @param  string  $foreignPivotKey
      * @param  string  $relatedPivotKey
      * @param  string  $parentKey
      * @param  string  $relatedKey
-     * @param  string  $relation
+     * @param  string  $relation 只是一个名字
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function belongsToMany($related, $table = null, $foreignPivotKey = null, $relatedPivotKey = null,
@@ -455,8 +467,8 @@ trait HasRelationships
             $this->$relation()->touch();
 
             if ($this->$relation instanceof self) {
-                $this->$relation->fireModelEvent('saved', false);
-
+                $this->$relation->fireModelEvent('saved', false); //todo 为什么递归调用要触发一下saved呢，难道touch不触发 saved
+                //如果是自己就地柜调用
                 $this->$relation->touchOwners();
             } elseif ($this->$relation instanceof Collection) {
                 $this->$relation->each(function (Model $relation) {

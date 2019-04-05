@@ -8,7 +8,7 @@ trait HasTimestamps
 {
     /**
      * Indicates if the model should be timestamped.
-     *
+     * 默认为true，所以要注意，没有的时候要设置为false
      * @var bool
      */
     public $timestamps = true;
