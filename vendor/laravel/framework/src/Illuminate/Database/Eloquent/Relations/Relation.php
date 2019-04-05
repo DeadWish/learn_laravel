@@ -67,6 +67,7 @@ abstract class Relation
         $this->parent = $parent;
         $this->related = $query->getModel();
 
+        //约束，目前只有morph使用
         $this->addConstraints();
     }
 
