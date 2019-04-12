@@ -34,7 +34,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 
     /**
      * The table associated with the model.
-     *
+     * 表名，一般是 小写的复数形式
      * @var string
      */
     protected $table;
@@ -48,7 +48,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 
     /**
      * The "type" of the auto-incrementing ID.
-     *
+     * 主键的数据类型
      * @var string
      */
     protected $keyType = 'int';
@@ -62,14 +62,14 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 
     /**
      * The relations to eager load on every query.
-     *
+     * 每个请求都会加载的关系
      * @var array
      */
     protected $with = [];
 
     /**
      * The relationship counts that should be eager loaded on every query.
-     *
+     * 每个请求都会加载某个关系的数量
      * @var array
      */
     protected $withCount = [];
@@ -90,38 +90,38 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 
     /**
      * Indicates if the model was inserted during the current request lifecycle.
-     *
+     * 用来判断，这个模型是否是在此次请求中新建到数据库的
      * @var bool
      */
     public $wasRecentlyCreated = false;
 
     /**
      * The connection resolver instance.
-     *
+     * 数据库管理者
      * @var \Illuminate\Database\ConnectionResolverInterface
      */
     protected static $resolver;
 
     /**
      * The event dispatcher instance.
-     *
+     * 事件分发器
      * @var \Illuminate\Contracts\Events\Dispatcher
      */
     protected static $dispatcher;
 
     /**
      * The array of booted models.
-     *
+     * 记录是否被booted过，不要重复boot model
      * @var array
      */
     protected static $booted = [];
 
     /**
      * The array of global scopes on the model.
-     *
+     * 记录全局的scope
      * @var array
      */
-    protected static $globalScopes = [];  //todo 这里为什么要 static呢
+    protected static $globalScopes = [];
 
     /**
      * The name of the "created at" column.
@@ -145,10 +145,11 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
      */
     public function __construct(array $attributes = [])
     {
+    	//每个模型第一次使用，都会boot，然后用static::$booted来记录，不要重复调用
         $this->bootIfNotBooted();
 
-        $this->syncOriginal();
-
+        $this->syncOriginal(); //todo 新建的话这里不都是空？为什么还要
+		//把初始化的数据都填上
         $this->fill($attributes);
     }
 
@@ -161,9 +162,9 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     {
         if (! isset(static::$booted[static::class])) {
             static::$booted[static::class] = true;
-
+			//booting事件触发
             $this->fireModelEvent('booting', false);
-
+			//主要是 boot trait ，有个规则，boot + Trait名，就会在这里自动调用
             static::boot();
 
             $this->fireModelEvent('booted', false);
@@ -229,6 +230,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
             if ($this->isFillable($key)) {
                 $this->setAttribute($key, $value);
             } elseif ($totallyGuarded) {
+            	//批量赋值异常
                 throw new MassAssignmentException($key);
             }
         }
@@ -1129,7 +1131,8 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 
     /**
      * Set the connection resolver instance.
-     *
+     * 这个是在 DatabaseServiceProvider 的boot中调用的 resolver 就是 DatabaseManager
+	 *
      * @param  \Illuminate\Database\ConnectionResolverInterface  $resolver
      * @return void
      */

@@ -22,7 +22,7 @@ trait GuardsAttributes
 
     /**
      * Indicates if all mass assignment is enabled.
-     *
+     * 是否可以批量赋值
      * @var bool
      */
     protected static $unguarded = false;
@@ -168,7 +168,7 @@ trait GuardsAttributes
 
     /**
      * Determine if the model is totally guarded.
-     *
+     * 是否一个都不让填，必须要fillable 为空，guarded = ['*']
      * @return bool
      */
     public function totallyGuarded()
@@ -178,7 +178,7 @@ trait GuardsAttributes
 
     /**
      * Get the fillable attributes of a given array.
-     *
+     * 返回可以填写的字段名
      * @param  array  $attributes
      * @return array
      */
