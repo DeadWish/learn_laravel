@@ -119,6 +119,7 @@ class Builder
         $this->scopes[$identifier] = $scope;
 
         if (method_exists($scope, 'extend')) {
+        	//scope还可以运行extend
             $scope->extend($this);
         }
 

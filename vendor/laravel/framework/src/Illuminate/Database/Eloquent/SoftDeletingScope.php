@@ -6,7 +6,7 @@ class SoftDeletingScope implements Scope
 {
     /**
      * All of the extensions to be added to the builder.
-     *
+     * 他们会注册一些macro方法来实现
      * @var array
      */
     protected $extensions = ['Restore', 'WithTrashed', 'WithoutTrashed', 'OnlyTrashed'];
@@ -35,6 +35,7 @@ class SoftDeletingScope implements Scope
             $this->{"add{$extension}"}($builder);
         }
 
+        //builder 的 预先执行delete
         $builder->onDelete(function (Builder $builder) {
             $column = $this->getDeletedAtColumn($builder);
 

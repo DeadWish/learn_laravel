@@ -479,7 +479,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 
     /**
      * Save the model and all of its relationships.
-     *
+     * 把所有关系都保存一下
      * @return bool
      */
     public function push()
@@ -506,6 +506,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     }
 
     /**
+	 * create update 都是 save ，他们的事件都在这里调用
      * Save the model to the database.
      *
      * @param  array  $options
@@ -525,6 +526,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
         // If the model already exists in the database we can just update our record
         // that is already in this database using the current IDs in this "where"
         // clause to only update this model. Otherwise, we'll just insert them.
+		// 如果是已经存在的模型，则要更新
         if ($this->exists) {
             $saved = $this->isDirty() ?
                         $this->performUpdate($query) : true;
@@ -536,6 +538,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
         else {
             $saved = $this->performInsert($query);
 
+            //todo 为什么要重新设置一下连接？
             if (! $this->getConnectionName() &&
                 $connection = $query->getConnection()) {
                 $this->setConnection($connection->getName());
@@ -577,10 +580,12 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     {
         $this->fireModelEvent('saved', false);
 
+        //touch 默认为true，所以relations 都会被更新
         if ($this->isDirty() && ($options['touch'] ?? true)) {
             $this->touchOwners();
         }
 
+        //同步original
         $this->syncOriginal();
     }
 
@@ -883,7 +888,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 
     /**
      * Get a new query to restore one or more models by their queueable IDs.
-     *
+     * 为了restore 就是不要scope ，所以就返回withoutscopes
      * @param  array|int  $ids
      * @return \Illuminate\Database\Eloquent\Builder
      */
@@ -909,7 +914,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 
     /**
      * Get a new query builder instance for the connection.
-     *
+     * 构建最基础的query builder
      * @return \Illuminate\Database\Query\Builder
      */
     protected function newBaseQueryBuilder()
@@ -934,7 +939,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 
     /**
      * Create a new pivot model instance.
-     *
+     * todo 创建一个中间关系?
      * @param  \Illuminate\Database\Eloquent\Model  $parent
      * @param  array  $attributes
      * @param  string  $table
@@ -1027,7 +1032,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 
     /**
      * Clone the model into a new, non-existing instance.
-     *
+     * 复制一个
      * @param  array|null  $except
      * @return \Illuminate\Database\Eloquent\Model
      */
@@ -1052,7 +1057,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 
     /**
      * Determine if two models have the same ID and belong to the same table.
-     *
+     * 是否是相同的模型，是要判断是否是同一个连接的
      * @param  \Illuminate\Database\Eloquent\Model|null  $model
      * @return bool
      */
