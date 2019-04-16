@@ -21,6 +21,7 @@ abstract class Relation
 
     /**
      * The Eloquent query builder instance.
+     * 一般会在hasOne这种方法里新建的时候传个新建的Builder
      *
      * @var \Illuminate\Database\Eloquent\Builder
      */
@@ -28,6 +29,7 @@ abstract class Relation
 
     /**
      * The parent model instance.
+     * 就是当前拥有此关系的model实例
      *
      * @var \Illuminate\Database\Eloquent\Model
      */
@@ -35,12 +37,13 @@ abstract class Relation
 
     /**
      * The related model instance.
-     *
+     * 这个是关系的实例，因为 $instance->newQuery()，QueryBuilder 会自动记录instance
      * @var \Illuminate\Database\Eloquent\Model
      */
     protected $related;
 
     /**
+     * 关系是否有制约条件，像morphTo，就是一个type的制约条件
      * Indicates if the relation is adding constraints.
      *
      * @var bool
