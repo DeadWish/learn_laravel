@@ -325,7 +325,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 
     /**
      * Begin querying the model on the write connection.
-     *
+     * 使用写库的链接
      * @return \Illuminate\Database\Query\Builder
      */
     public static function onWriteConnection()
@@ -380,7 +380,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 
     /**
      * Eager load relations on the model if they are not already eager loaded.
-     *
+     * 加载relation，如果加载过了就不加载了
      * @param  array|string  $relations
      * @return $this
      */

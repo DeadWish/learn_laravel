@@ -2397,7 +2397,7 @@ class Builder
 
     /**
      * Use the write pdo for query.
-     *
+     * 读写分离，使用写库
      * @return $this
      */
     public function useWritePdo()

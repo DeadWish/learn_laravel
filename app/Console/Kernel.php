@@ -32,7 +32,12 @@ class Kernel extends ConsoleKernel
     	// php artisan schedule:run 就会运行这个
 
          $schedule->command('inspire')
-                  ->hourly();
+                  ->everyMinute()->runInBackground()->then(function () {
+
+			 });
+
+			 $schedule->command('inspire')
+				 ->everyMinute();
     }
 
     /**
