@@ -38,7 +38,7 @@ class Auth extends Facade
 
     /**
      * Register the typical authentication routes for an application.
-     *
+     * 在路由中注册框架中auth的api
      * @return void
      */
     public static function routes()

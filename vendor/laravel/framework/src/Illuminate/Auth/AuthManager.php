@@ -35,7 +35,7 @@ class AuthManager implements FactoryContract
      * The user resolver shared by various services.
      *
      * Determines the default user for Gate, Request, and the Authenticatable contract.
-     *
+     * User的获取者
      * @var \Closure
      */
     protected $userResolver;
@@ -50,6 +50,7 @@ class AuthManager implements FactoryContract
     {
         $this->app = $app;
 
+        // 要注意这是一个回调
         $this->userResolver = function ($guard = null) {
             return $this->guard($guard)->user();
         };
@@ -65,6 +66,7 @@ class AuthManager implements FactoryContract
     {
         $name = $name ?: $this->getDefaultDriver();
 
+        //获取默认配置，guard，默认是web，没有就去解析
         return $this->guards[$name] ?? $this->guards[$name] = $this->resolve($name);
     }
 
@@ -88,6 +90,12 @@ class AuthManager implements FactoryContract
             return $this->callCustomCreator($name, $config);
         }
 
+        //默认的web是这样的
+//		'web' => [
+//			'driver' => 'session',
+//			'provider' => 'users',
+//		],
+		//这里会调用 createSessionDriver
         $driverMethod = 'create'.ucfirst($config['driver']).'Driver';
 
         if (method_exists($this, $driverMethod)) {
@@ -118,17 +126,20 @@ class AuthManager implements FactoryContract
      */
     public function createSessionDriver($name, $config)
     {
+    	//先创建user 提供者
         $provider = $this->createUserProvider($config['provider'] ?? null);
-
+		//创建一个session守卫者，就是用session来管理权限的守卫
         $guard = new SessionGuard($name, $provider, $this->app['session.store']);
 
         // When using the remember me functionality of the authentication services we
         // will need to be set the encryption instance of the guard, which allows
         // secure, encrypted cookie values to get generated for those cookies.
         if (method_exists($guard, 'setCookieJar')) {
+        	//Illuminate\Cookie\CookieJar
             $guard->setCookieJar($this->app['cookie']);
         }
 
+        //事件分发器
         if (method_exists($guard, 'setDispatcher')) {
             $guard->setDispatcher($this->app['events']);
         }
@@ -164,7 +175,7 @@ class AuthManager implements FactoryContract
 
     /**
      * Get the guard configuration.
-     *
+     * 这是从guards里获取相应的配置
      * @param  string  $name
      * @return array
      */

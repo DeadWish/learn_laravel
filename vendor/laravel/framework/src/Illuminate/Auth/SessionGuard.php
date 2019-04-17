@@ -661,7 +661,7 @@ class SessionGuard implements StatefulGuard, SupportsBasicAuth
 
     /**
      * Set the cookie creator instance used by the guard.
-     *
+     * 设置cookie的创建者
      * @param  \Illuminate\Contracts\Cookie\QueueingFactory  $cookie
      * @return void
      */

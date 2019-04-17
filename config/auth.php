@@ -12,7 +12,10 @@ return [
     | as required, but they're a perfect start for most applications.
     |
     */
-
+/*
+ * Illuminate\Auth\AuthManger 里有方法调用
+ * 里面的配置，其实是选择此配置下面的一些选项
+ */
     'defaults' => [
         'guard' => 'web',
         'passwords' => 'users',
