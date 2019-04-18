@@ -122,6 +122,7 @@ class SessionGuard implements StatefulGuard, SupportsBasicAuth
             return $this->user;
         }
 
+        //todo 这个id 是怎么获取到的?
         $id = $this->session->get($this->getName());
 
         // First we will try to load the user using the identifier in the session if
@@ -136,13 +137,14 @@ class SessionGuard implements StatefulGuard, SupportsBasicAuth
         // If the user is null, but we decrypt a "recaller" cookie we can attempt to
         // pull the user data on that cookie which serves as a remember cookie on
         // the application. Once we have a user we can return it to the caller.
+		// recaller 就是重复请求的人，可以从cookie 拿到用户信息
         $recaller = $this->recaller();
 
         if (is_null($this->user) && ! is_null($recaller)) {
-            $this->user = $this->userFromRecaller($recaller);
+            $this->user = $this->userFromRecaller($recaller); // 从 recaller 中获取到 id 和 remember token，获取到user
 
             if ($this->user) {
-                $this->updateSession($this->user->getAuthIdentifier());
+                $this->updateSession($this->user->getAuthIdentifier()); // 更新session，每次都更新一个
 
                 $this->fireLoginEvent($this->user, true);
             }
@@ -406,6 +408,7 @@ class SessionGuard implements StatefulGuard, SupportsBasicAuth
      */
     public function login(AuthenticatableContract $user, $remember = false)
     {
+    	//session 每次登录都会更新
         $this->updateSession($user->getAuthIdentifier());
 
         // If the user should be permanently "remembered" by the application we will
@@ -414,7 +417,7 @@ class SessionGuard implements StatefulGuard, SupportsBasicAuth
         if ($remember) {
             $this->ensureRememberTokenIsSet($user);
 
-            $this->queueRecallerCookie($user);
+            $this->queueRecallerCookie($user); //todo 这里到底干了啥懵逼了
         }
 
         // If we have an event dispatcher instance set we will fire an event so that

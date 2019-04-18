@@ -38,7 +38,7 @@ class EloquentUserProvider implements UserProvider
 
     /**
      * Retrieve a user by their unique identifier.
-     *
+     * 通过ID取出用户
      * @param  mixed  $identifier
      * @return \Illuminate\Contracts\Auth\Authenticatable|null
      */
@@ -53,7 +53,7 @@ class EloquentUserProvider implements UserProvider
 
     /**
      * Retrieve a user by their unique identifier and "remember me" token.
-     *
+     *  id + rememberme token 一起
      * @param  mixed  $identifier
      * @param  string  $token
      * @return \Illuminate\Contracts\Auth\Authenticatable|null
@@ -101,6 +101,7 @@ class EloquentUserProvider implements UserProvider
      */
     public function retrieveByCredentials(array $credentials)
     {
+    	//todo 这里为什么要把password排除掉呢
         if (empty($credentials) ||
            (count($credentials) === 1 &&
             array_key_exists('password', $credentials))) {
@@ -123,7 +124,7 @@ class EloquentUserProvider implements UserProvider
 
     /**
      * Validate a user against the given credentials.
-     *
+     * 就是根据密码验证用户喽，要那么多
      * @param  \Illuminate\Contracts\Auth\Authenticatable  $user
      * @param  array  $credentials
      * @return bool
