@@ -953,6 +953,7 @@ class Builder
 
         $result = $scope(...array_values($parameters)) ?? $this;
 
+        //这里会判断有没有新的where条件加进来
         if (count((array) $query->wheres) > $originalWhereCount) {
             $this->addNewWheresWithinGroup($query, $originalWhereCount);
         }

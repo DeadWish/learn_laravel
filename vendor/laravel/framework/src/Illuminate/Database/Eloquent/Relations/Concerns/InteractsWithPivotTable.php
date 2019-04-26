@@ -442,7 +442,7 @@ trait InteractsWithPivotTable
 
     /**
      * Set the columns on the pivot table to retrieve.
-     *
+     * 取出 pivot 表中的列，一般可以用在 belongsToMany
      * @param  array|mixed  $columns
      * @return $this
      */

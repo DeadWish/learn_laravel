@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 class Lockout
 {
+    //限流锁住事件
     /**
      * The throttled request.
      *

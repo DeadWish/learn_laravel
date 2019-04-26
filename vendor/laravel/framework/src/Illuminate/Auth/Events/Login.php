@@ -6,6 +6,7 @@ use Illuminate\Queue\SerializesModels;
 
 class Login
 {
+    //登录事件
     use SerializesModels;
 
     /**

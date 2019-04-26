@@ -7,6 +7,7 @@ use Illuminate\Contracts\Auth\Factory as AuthFactory;
 
 class AuthenticateWithBasicAuth
 {
+    //http 基本验证的中间件，auth.basic
     /**
      * The guard factory instance.
      *

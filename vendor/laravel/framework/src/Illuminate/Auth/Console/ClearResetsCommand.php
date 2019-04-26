@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 
 class ClearResetsCommand extends Command
 {
+    //刷新密码重置令牌
     /**
      * The name and signature of the console command.
      *

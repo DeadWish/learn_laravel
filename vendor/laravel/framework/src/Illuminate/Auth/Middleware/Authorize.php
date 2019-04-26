@@ -9,6 +9,8 @@ use Illuminate\Contracts\Auth\Factory as Auth;
 
 class Authorize
 {
+    //can 中间件，是用来验证action的，写法例如 "can:update,User"
+    //最终会用Gate的policy来验证
     /**
      * The authentication factory instance.
      *

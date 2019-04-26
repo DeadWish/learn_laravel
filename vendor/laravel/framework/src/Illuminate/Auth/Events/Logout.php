@@ -6,6 +6,7 @@ use Illuminate\Queue\SerializesModels;
 
 class Logout
 {
+    //登出事件
     use SerializesModels;
 
     /**

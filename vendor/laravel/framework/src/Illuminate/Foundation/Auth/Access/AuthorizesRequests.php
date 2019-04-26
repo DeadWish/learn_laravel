@@ -9,7 +9,7 @@ trait AuthorizesRequests
 {
     /**
      * Authorize a given action for the current user.
-     *
+     * 当前用户健全，会用到GATE
      * @param  mixed  $ability
      * @param  mixed|array  $arguments
      * @return \Illuminate\Auth\Access\Response
@@ -25,6 +25,7 @@ trait AuthorizesRequests
 
     /**
      * Authorize a given action for a user.
+     * 可以对某个特定的user来鉴别动作的权限
      *
      * @param  \Illuminate\Contracts\Auth\Authenticatable|mixed  $user
      * @param  mixed  $ability
@@ -92,6 +93,7 @@ trait AuthorizesRequests
             $middleware["can:{$ability},{$modelName}"][] = $method;
         }
 
+        //这里很牛逼额，被注册到了此控制器的 "can" 中间件里去，can中间件也就是Illuminate\Auth\Middleware\Authorize 会调用gate的鉴权方法
         foreach ($middleware as $middlewareName => $methods) {
             $this->middleware($middlewareName, $options)->only($methods);
         }
@@ -99,7 +101,7 @@ trait AuthorizesRequests
 
     /**
      * Get the map of resource methods to ability names.
-     *
+     * 可以在Controller里覆盖此方法
      * @return array
      */
     protected function resourceAbilityMap()
@@ -116,7 +118,7 @@ trait AuthorizesRequests
 
     /**
      * Get the list of resource methods which do not have model parameters.
-     *
+     * 可以在Controller里覆盖此方法
      * @return array
      */
     protected function resourceMethodsWithoutModels()

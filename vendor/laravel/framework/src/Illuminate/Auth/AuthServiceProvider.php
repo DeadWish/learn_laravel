@@ -20,7 +20,7 @@ class AuthServiceProvider extends ServiceProvider
 
         $this->registerUserResolver();
 
-        $this->registerAccessGate();
+        $this->registerAccessGate(); // 注册访问GATE
 
         $this->registerRequestRebindHandler();
     }
@@ -69,7 +69,7 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->app->singleton(GateContract::class, function ($app) {
             return new Gate($app, function () use ($app) {
-                return call_user_func($app['auth']->userResolver());
+                return call_user_func($app['auth']->userResolver()); // userResolver 是个function
             });
         });
     }

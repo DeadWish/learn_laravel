@@ -4,6 +4,7 @@ namespace Illuminate\Auth\Events;
 
 class Failed
 {
+    //尝试登录但失败事件
     /**
      * The user the attempter was trying to authenticate as.
      *

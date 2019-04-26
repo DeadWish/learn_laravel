@@ -68,6 +68,7 @@ trait QueriesRelationships
     {
         $relations = explode('.', $relations);
 
+        //这里有个递归，一层一层的解开 . 很好的设计
         $closure = function ($q) use (&$closure, &$relations, $operator, $count, $callback) {
             // In order to nest "has", we need to add count relation constraints on the
             // callback Closure. We'll do this by simply passing the Closure its own

@@ -8,6 +8,7 @@ use Illuminate\Contracts\Auth\Factory as Auth;
 
 class Authenticate
 {
+    //这个是 auth 中间件
     /**
      * The authentication factory instance.
      *
@@ -54,6 +55,7 @@ class Authenticate
     protected function authenticate(array $guards)
     {
         if (empty($guards)) {
+            //这里最终会调用guard的user方法，然后当前user就会被设置上了
             return $this->auth->authenticate();
         }
 

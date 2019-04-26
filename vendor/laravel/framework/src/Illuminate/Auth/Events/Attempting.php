@@ -4,9 +4,10 @@ namespace Illuminate\Auth\Events;
 
 class Attempting
 {
+    //尝试登陆事件
     /**
      * The credentials for the user.
-     *
+     * 用户校验身份的凭证
      * @var array
      */
     public $credentials;
