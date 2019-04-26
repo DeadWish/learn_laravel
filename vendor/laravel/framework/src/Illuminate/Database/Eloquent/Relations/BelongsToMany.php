@@ -748,7 +748,7 @@ class BelongsToMany extends Relation
      */
     public function save(Model $model, array $pivotAttributes = [], $touch = true)
     {
-        $model->save(['touch' => false]);
+        $model->save(['touch' => false]); // todo 这里为什么要 save 一下呢？以防万一是新建的模型？好新增一条原来的记录？
 
         $this->attach($model->getKey(), $pivotAttributes, $touch);
 
