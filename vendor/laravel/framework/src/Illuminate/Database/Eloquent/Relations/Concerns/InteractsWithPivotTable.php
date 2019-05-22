@@ -201,7 +201,7 @@ trait InteractsWithPivotTable
 
     /**
      * Attach a model to the parent.
-     *
+     * 这里id可以传ids，奇怪不知道为什么这里要写成id
      * @param  mixed  $id
      * @param  array  $attributes
      * @param  bool   $touch
